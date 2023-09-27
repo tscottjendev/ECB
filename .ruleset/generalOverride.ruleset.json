@@ -1,0 +1,36 @@
+{
+    "name": "General Override",
+    "description": "Default overrides of Code Analyzers for Jendev ",
+    "rules": [
+        {
+            "id": "AA0005",
+            "action": "None",
+            "justification": "Only use BEGIN..END to enclose compound statements. - Coding style change"
+        },
+        {
+            "id": "AA0241",
+            "action": "None",
+            "justification": "Use all lowercase letters for reserved language keywords. - Miss identifying data types (Codeunit, Label, etc.)"
+        },
+		{
+			"id": "AS0084",
+			"action": "None",
+			"justification": "The ID range '[x..y]' is not valid. It must be within the range allocated to the partner for AppSource, within the range '[1000000..75999999]' allocated to AppSource applications, and outside the range '[50000..99999]' allocated to per-tenant customizations."
+		},
+		{
+			"id": "AS0092",
+			"action": "None",
+			"justification": "The app.json file must specify an Azure Application Insights resource with the property 'applicationInsightsConnectionString' for monitoring operations related to this extension. See https://learn.microsoft.com/dynamics365/business-central/dev-itpro/administration/telemetry-overview for additional information."
+		},
+        {
+            "id": "LC0009",
+            "action": "Warning",
+            "justification": "Show info message about code metrics for each function or trigger - Enable"
+        },
+        {
+            "id": "LC0010",
+            "action": "Warning",
+            "justification": "Show info message about code metrics for each function or trigger - Enable"
+        }
+    ]
+}

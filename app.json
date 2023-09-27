@@ -1,0 +1,36 @@
+{
+  "id": "8f4981a5-cfc6-4a99-81d1-ac8f1095401e",
+  "name": "European Central Bank Exchange Rates",
+  "publisher": "Jendev",
+  "version": "1.0.0.0",
+  "brief": "Import the complete history of the European Central Bank Exchange Rates",
+  "description": "This extension allows you to import the complete history of the European Central Bank Exchange Rates into your database for a number of currencies.",
+  "privacyStatement": "https://www.jendev.com/privacyStatement",
+  "EULA": "https://www.jendev.com/EULA",
+  "help": "https://www.jendev.com/help",
+  "url": "https://www.jendev.com/ecb",
+  "contextSensitiveHelpUrl": "https://www.jendev.com/help",
+  "logo": "./logo/ecb logo.png",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "22.5.0.0",
+  "idRanges": [
+    {
+      "from": 50100,
+      "to": 50149
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "11.0",
+  "features": [
+    "NoImplicitWith",
+    "TranslationFile",
+    "NoPromotedActionProperties"
+  ],
+  "target": "Cloud"
+}

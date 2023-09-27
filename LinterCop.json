@@ -1,0 +1,6 @@
+{
+    "cyclomaticComplexityThreshold": 1,
+    "maintainabilityIndexThreshold": 80,
+    "enableRule0011ForTableFields": false,
+    "enableRule0016ForApiObjects": false
+  }

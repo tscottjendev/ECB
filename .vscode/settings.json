@@ -1,0 +1,45 @@
+{
+    "al.backgroundCodeAnalysis": "Project",
+    "al.codeAnalyzers": [
+        "${CodeCop}",
+        "${UICop}",
+        "${PerTenantExtensionCop}",
+        "${analyzerFolder}BusinessCentral.LinterCop.dll"
+    ],
+    "al.enableCodeActions": true,
+    "al.enableCodeAnalysis": true,
+    "al.incrementalBuild": true,
+    "al.ruleSetPath": "./.ruleset/generalOverride.ruleset.json",
+    "alOutline.codeActionsOnSave": [
+        "SortReportColumns",
+        "SortProperties",
+        "SortProcedures",
+        "SortVariables",
+        "FormatDocument"
+    ],
+    "alOutline.codeCleanupActions": [
+        "SortTableFields",
+        "SortReportColumns",
+        "SortProperties",
+        "SortProcedures",
+        "SortVariables",
+        "FormatDocument",
+        "AddEnumValuesCaptions",
+        "ConvertObjectIdsToNames",
+        "FixKeywordsCase",
+        "FixIdentifiersCase",
+        "AddMissingParentheses",
+        "RemoveUnusedVariables",
+        "RemoveBeginEnd",
+        "RemoveEmptyTriggers",
+        "RemoveEmptyLines",
+        "TrimTrailingWhitespace",
+        "MakeFlowFieldsReadOnly"
+    ],
+    "CRS.FileNamePatternExtensions": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+    "CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+    "CRS.ObjectNamePrefix": "ECB ",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.al": true
+    }
+}
