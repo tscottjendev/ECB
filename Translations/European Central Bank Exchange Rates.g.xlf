@@ -3,10 +3,35 @@
   <file datatype="xml" source-language="en-US" target-language="en-US" original="European Central Bank Exchange Rates">
     <body>
       <group id="body">
-        <trans-unit id="PageExtension 707359870 - Action 3201496503 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4081634891">
+        <trans-unit id="PageExtension 1338353167 - Method 4107592275 - NamedType 1896199182" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
+          <source>Unexpected number of files in zip archive</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method DecompressFile - NamedType NumberOfFilesErr</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1338353167 - Method 2787516006 - NamedType 2885620115" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
+          <source>https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method DownloadFile - NamedType EuroFXRefUrlTok</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1338353167 - Method 1655277019 - NamedType 3420171491" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
+          <source>Failed to download ECB file. \%1</source>
+          <note from="Developer" annotates="general" priority="2">%1 is the error message from the HTTP client</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method ECBImport - NamedType DownloadErr</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1338353167 - Method 3095838355 - NamedType 2854561343" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
+          <source>,</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method FillCSVBuffer - NamedType SeparatorTok</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1338353167 - Action 4185100595 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4081634891">
+          <source>Import EUR exchange rates from ECB</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Action ECB Import - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1338353167 - Action 4185100595 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4081634891">
           <source>Import from ECB</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CurExtend - Action Import - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Action ECB Import - Property Caption</note>
         </trans-unit>
       </group>
     </body>

@@ -19,7 +19,7 @@ pageextension 50100 "ECB Currencies" extends Currencies
         }
     }
 
-    local procedure CreateCurrencyAndExchagneRate(var TempCSVBuffer: Record "CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer)
+    local procedure CreateCurrencyAndExchangeRate(var TempCSVBuffer: Record "CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer)
     var
         Line: Integer;
     begin
@@ -67,17 +67,15 @@ pageextension 50100 "ECB Currencies" extends Currencies
         InsertCurrencyExchangeRate(CurrencyCode, StartingDate, ExchangeRateAmount);
     end;
 
-    local procedure DecompressFile(var TempBlob: Codeunit "Temp Blob")
+    local procedure DecompressFile(var TempBlob: Codeunit "Temp Blob"; var DownloadInStream: InStream)
     var
         DataCompression: Codeunit "Data Compression";
-        InStream: InStream;
         LengthOfCSV: Integer;
         NumberOfFilesErr: Label 'Unexpected number of files in zip archive';
         FileList: List of [Text];
         OutStream: OutStream;
     begin
-        TempBlob.CreateInStream(InStream);
-        DataCompression.OpenZipArchive(InStream, false);
+        DataCompression.OpenZipArchive(DownloadInStream, false);
         DataCompression.GetEntryList(FileList);
         if FileList.Count() <> 1 then
             Error(NumberOfFilesErr);
@@ -98,8 +96,7 @@ pageextension 50100 "ECB Currencies" extends Currencies
         if not HttpResponseMessage.IsSuccessStatusCode() then
             exit(false);
 
-        HttpResponseMessage.Content.ReadAs(InStream);
-        exit(true);
+        exit(HttpResponseMessage.Content.ReadAs(InStream));
     end;
 
     local procedure ECBImport()
@@ -107,20 +104,20 @@ pageextension 50100 "ECB Currencies" extends Currencies
         TempCSVBuffer: Record "CSV Buffer" temporary;
         TempBlob: Codeunit "Temp Blob";
         CurrencyCode: Code[10];
-        InStream: InStream;
+        DownloadInStream: InStream;
         Column: Integer;
         DownloadErr: Label 'Failed to download ECB file. \%1', Comment = '%1 is the error message from the HTTP client';
     begin
-        TempBlob.CreateInStream(InStream);
-        if not DownloadFile(InStream) then
+        TempBlob.CreateInStream(DownloadInStream);
+        if not DownloadFile(DownloadInStream) then
             Error(DownloadErr, GetLastErrorText());
 
-        DecompressFile(TempBlob);
+        DecompressFile(TempBlob, DownloadInStream);
         FillCSVBuffer(TempCSVBuffer, TempBlob);
         for Column := 2 to TempCSVBuffer.GetNumberOfColumns() do begin
             TempCSVBuffer.Get(1, Column);
             CurrencyCode := CopyStr(TempCSVBuffer.Value, 1, MaxStrLen(CurrencyCode));
-            CreateCurrencyAndExchagneRate(TempCSVBuffer, CurrencyCode, Column);
+            CreateCurrencyAndExchangeRate(TempCSVBuffer, CurrencyCode, Column);
         end;
     end;
 
