@@ -3,25 +3,80 @@
   <file datatype="xml" source-language="en-US" target-language="en-US" original="European Central Bank Exchange Rates">
     <body>
       <group id="body">
-        <trans-unit id="PageExtension 1338353167 - Method 4107592275 - NamedType 1896199182" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
-          <source>Unexpected number of files in zip archive</source>
+        <trans-unit id="Table 1465144493 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>ECB Setup</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method DecompressFile - NamedType NumberOfFilesErr</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - Property Caption</note>
         </trans-unit>
-        <trans-unit id="PageExtension 1338353167 - Method 2787516006 - NamedType 2885620115" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
+        <trans-unit id="Table 1465144493 - NamedType 2878336105" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 is not defined.</source>
+          <note from="Developer" annotates="general" priority="2">%1=Field caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - NamedType FieldNotDefinedMsg</note>
+        </trans-unit>
+        <trans-unit id="Table 1465144493 - NamedType 4026671006" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open Setup Page</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - NamedType OpenSetupPageLbl</note>
+        </trans-unit>
+        <trans-unit id="Table 1465144493 - Method 1351495776 - NamedType 2885620115" size-unit="char" translate="yes" xml:space="preserve">
           <source>https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method DownloadFile - NamedType EuroFXRefUrlTok</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - Method SetupDefaultData - NamedType EuroFXRefUrlTok</note>
         </trans-unit>
-        <trans-unit id="PageExtension 1338353167 - Method 1655277019 - NamedType 3420171491" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
-          <source>Failed to download ECB file. \%1</source>
-          <note from="Developer" annotates="general" priority="2">%1 is the error message from the HTTP client</note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method ECBImport - NamedType DownloadErr</note>
+        <trans-unit id="Table 1465144493 - Method 1152330275 - NamedType 1019955210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The %1 is required to allow the import of exchange rates from the European Central Bank.</source>
+          <note from="Developer" annotates="general" priority="2">%1= is field caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - Method TestDownloadURL - NamedType DetailInfoMsg</note>
         </trans-unit>
-        <trans-unit id="PageExtension 1338353167 - Method 3095838355 - NamedType 2854561343" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1338353167">
+        <trans-unit id="Table 1465144493 - Field 3030645745 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Download URL</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - Field Download URL - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 1465144493 - Field 1663593181 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Primary Key</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ECB Setup - Field Primary Key - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4185100595 - Method 4107592275 - NamedType 1896199182" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unexpected number of files in zip archive</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Import - Method DecompressFile - NamedType NumberOfFilesErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4185100595 - Method 3095838355 - NamedType 2854561343" size-unit="char" translate="yes" xml:space="preserve">
           <source>,</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Method FillCSVBuffer - NamedType SeparatorTok</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Import - Method FillCSVBuffer - NamedType SeparatorTok</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4185100595 - Method 2222575433 - NamedType 3420171491" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Failed to download ECB file. \%1</source>
+          <note from="Developer" annotates="general" priority="2">%1 is the error message from the HTTP client</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Import - Method ImportExchangeRates - NamedType DownloadErr</note>
+        </trans-unit>
+        <trans-unit id="Page 1465144493 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>ECB Setup</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ECB Setup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1465144493 - Control 2445482498 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>General</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ECB Setup - Control General - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1465144493 - Control 3030645745 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the download URL to the ECB historical rates file.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ECB Setup - Control Download URL - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 1465144493 - Action 3180105825 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sets the default data for the ECB Import</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ECB Setup - Action SetDefaultDataAction - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 1465144493 - Action 3180105825 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Set Default Data</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ECB Setup - Action SetDefaultDataAction - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 1338353167 - Action 4185100595 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4081634891">
           <source>Import EUR exchange rates from ECB</source>
