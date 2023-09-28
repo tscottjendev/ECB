@@ -7,8 +7,59 @@ codeunit 50100 "ECB Import"
 
     var
         ECBSetup: Record "ECB Setup";
+        SelectedECBProgressHandler: Interface "ECB Progress Handler";
+        SelectedECBSummaryHandler: Interface "ECB Summary Handler";
 
     procedure ImportExchangeRates()
+    var
+        ECBImportUI: Enum "ECB Import UI";
+        ECBProgressHandler: Interface "ECB Progress Handler";
+        ECBSummaryHandler: Interface "ECB Summary Handler";
+    begin
+        ECBImportUI := ECBImportUI::HideUI;
+        if GuiAllowed() then
+            ECBImportUI := ECBImportUI::ShowUI;
+
+        ECBProgressHandler := ECBImportUI;
+        ECBSummaryHandler := ECBImportUI;
+
+        ImportExchangeRates(ECBProgressHandler, ECBSummaryHandler);
+    end;
+
+    procedure ImportExchangeRates(ShowProgress: Boolean)
+    begin
+        ImportExchangeRates(ShowProgress, ShowProgress);
+    end;
+
+    procedure ImportExchangeRates(ShowProgress: Boolean; ShowSummary: Boolean)
+    var
+        ECBImportUI: Enum "ECB Import UI";
+        ECBProgressHandler: Interface "ECB Progress Handler";
+        ECBSummaryHandler: Interface "ECB Summary Handler";
+    begin
+        ECBProgressHandler := ECBImportUI::HideUI;
+        ECBSummaryHandler := ECBImportUI::HideUI;
+
+        if ShowProgress then
+            ECBProgressHandler := ECBImportUI::ShowUI;
+        if ShowSummary then
+            ECBSummaryHandler := ECBImportUI::ShowUI;
+
+        ImportExchangeRates(ECBProgressHandler, ECBSummaryHandler);
+    end;
+
+    procedure ImportExchangeRates(ECBImportUI: Enum "ECB Import UI")
+    var
+        ECBProgressHandler: Interface "ECB Progress Handler";
+        ECBSummaryHandler: Interface "ECB Summary Handler";
+    begin
+        ECBProgressHandler := ECBImportUI;
+        ECBSummaryHandler := ECBImportUI;
+
+        ImportExchangeRates(ECBProgressHandler, ECBSummaryHandler);
+    end;
+
+    procedure ImportExchangeRates(ECBProgressHandler: Interface "ECB Progress Handler"; ECBSummaryHandler: Interface "ECB Summary Handler")
     var
         TempCSVBuffer: Record "CSV Buffer" temporary;
         TempBlob: Codeunit "Temp Blob";
@@ -17,6 +68,11 @@ codeunit 50100 "ECB Import"
         Column: Integer;
         DownloadErr: Label 'Failed to download ECB file. \%1', Comment = '%1 is the error message from the HTTP client';
     begin
+        SelectedECBProgressHandler := ECBProgressHandler;
+        SelectedECBSummaryHandler := ECBSummaryHandler;
+
+        SelectedECBProgressHandler.OpenProgress();
+
         ECBSetup.GetRecordOnce();
         ECBSetup.TestSetupForImport();
 
@@ -29,8 +85,12 @@ codeunit 50100 "ECB Import"
         for Column := 2 to TempCSVBuffer.GetNumberOfColumns() do begin
             TempCSVBuffer.Get(1, Column);
             CurrencyCode := CopyStr(TempCSVBuffer.Value, 1, MaxStrLen(CurrencyCode));
+            SelectedECBProgressHandler.UpdateProgress(CurrencyCode);
             CreateCurrencyAndExchangeRate(TempCSVBuffer, CurrencyCode, Column);
         end;
+
+        SelectedECBProgressHandler.CloseProgress();
+        SelectedECBSummaryHandler.ShowSummary();
     end;
 
     local procedure CreateCurrencyAndExchangeRate(var TempCSVBuffer: Record "CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer)
@@ -42,6 +102,7 @@ codeunit 50100 "ECB Import"
 
         InsertCurrency(CurrencyCode);
         for Line := 2 to TempCSVBuffer.GetNumberOfLines() do begin
+            SelectedECBSummaryHandler.IncrementRecordsRead();
             CreateCurrencyExchangeRate(TempCSVBuffer, CurrencyCode, Column, Line);
         end;
     end;
@@ -133,5 +194,7 @@ codeunit 50100 "ECB Import"
         CurrencyExchangeRate.Validate("Exchange Rate Amount", 1);
         CurrencyExchangeRate.Validate("Relational Exch. Rate Amount", ExchangeRateAmount);
         CurrencyExchangeRate.Insert(true);
+
+        SelectedECBSummaryHandler.IncrementRecordsInserted();
     end;
 }
