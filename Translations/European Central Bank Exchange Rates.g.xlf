@@ -103,6 +103,31 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ECB Setup - Action SetDefaultDataAction - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Report 4185100595 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>ECB Import</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report ECB Import - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 4185100595 - Control 4145401368 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>If you want to see the progress of the import, set this option.  Do NOT set this option if you are scheduling the report or running the report through the job queue.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report ECB Import - Control ShowProgressField - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Report 4185100595 - Control 4145401368 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Show Progress Window</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report ECB Import - Control ShowProgressField - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 4185100595 - Control 3881142071 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>If you want to see the summary of the import after the report is complete, set this option.  Do NOT set this option if you are scheduling the report or running the report through the job queue.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report ECB Import - Control ShowSummaryField - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Report 4185100595 - Control 3881142071 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Show Summary Window</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report ECB Import - Control ShowSummaryField - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1338353167 - Action 4185100595 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4081634891">
           <source>Import EUR exchange rates from ECB</source>
           <note from="Developer" annotates="general" priority="2"></note>

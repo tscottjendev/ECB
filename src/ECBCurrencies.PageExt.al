@@ -13,9 +13,9 @@ pageextension 50100 "ECB Currencies" extends Currencies
 
                 trigger OnAction()
                 var
-                    ECBImport: Codeunit "ECB Import";
+                    ECBImport: Report "ECB Import";
                 begin
-                    ECBImport.ImportExchangeRates();
+                    ECBImport.Run();
                 end;
             }
         }
