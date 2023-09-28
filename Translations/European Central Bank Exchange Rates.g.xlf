@@ -53,6 +53,31 @@
           <note from="Developer" annotates="general" priority="2">%1 is the error message from the HTTP client</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Import - Method ImportExchangeRates - NamedType DownloadErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2485188902 - NamedType 2779639592" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Processing...#1########</source>
+          <note from="Developer" annotates="general" priority="2">#1 is the Currency Code</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Progress Handler Default - NamedType ProgressMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1385301218 - NamedType 2779639592" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Processing...#1########</source>
+          <note from="Developer" annotates="general" priority="2">#1 is the Currency Code</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Progress Handler Show UI - NamedType ProgressMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1862014787 - NamedType 3192651276" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unsupported Enum 'ECB Import UI' Value</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Progress Handler Unknown - NamedType UnsupportedEnumValueErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 256905313 - Method 3597963681 - NamedType 1453957919" size-unit="char" translate="yes" xml:space="preserve">
+          <source>ECB Import complete. %1 records read. %2 records inserted.</source>
+          <note from="Developer" annotates="general" priority="2">%1 number of records read and %2 number of records inserted</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Summary Handler Show UI - Method ShowSummary - NamedType SummaryMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1180499028 - NamedType 3192651276" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unsupported Enum 'ECB Import UI' Value</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit ECB Summary Handler Unknown - NamedType UnsupportedEnumValueErr</note>
+        </trans-unit>
         <trans-unit id="Page 1465144493 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>ECB Setup</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -87,6 +112,16 @@
           <source>Import from ECB</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension ECB Currencies - Action ECB Import - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 1058575999 - EnumValue 3491459296 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Hide UI</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum ECB Import UI - EnumValue HideUI - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 1058575999 - EnumValue 4078035673 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Show UI</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum ECB Import UI - EnumValue ShowUI - Property Caption</note>
         </trans-unit>
       </group>
     </body>
