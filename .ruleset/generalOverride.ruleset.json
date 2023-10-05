@@ -24,7 +24,7 @@
 		},
         {
             "id": "LC0009",
-            "action": "Warning",
+            "action": "Info",
             "justification": "Show info message about code metrics for each function or trigger - Enable"
         },
         {

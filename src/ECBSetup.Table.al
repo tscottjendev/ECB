@@ -9,6 +9,7 @@ table 50100 "ECB Setup"
         field(1; "Primary Key"; Code[10])
         {
             Caption = 'Primary Key';
+            NotBlank = false;
         }
         field(10; "Download URL"; Text[250])
         {

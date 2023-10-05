@@ -123,6 +123,24 @@ codeunit 50100 "ECB Import"
         InsertCurrencyExchangeRate(CurrencyCode, StartingDate, ExchangeRateAmount);
     end;
 
+    local procedure CurrencyExchangeRateExists(var CurrencyCode: Code[10]; var StartingDate: Date): Boolean
+    var
+        CurrencyExchangeRate: Record "Currency Exchange Rate";
+        ECBPublishedEvents: Codeunit "ECB Published Events";
+        IsHandled: Boolean;
+        ReturnValue: Boolean;
+    begin
+        ECBPublishedEvents.OnBeforeCurrencyExchangeRateExists(CurrencyCode, StartingDate, IsHandled, ReturnValue);
+        if IsHandled then
+            exit(ReturnValue);
+
+        CurrencyExchangeRate.SetLoadFields("Currency Code", "Starting Date");
+        CurrencyExchangeRate.SetRange("Currency Code", CurrencyCode);
+        CurrencyExchangeRate.SetRange("Starting Date", StartingDate);
+        exit(not CurrencyExchangeRate.IsEmpty());
+
+    end;
+
     local procedure DecompressFile(var TempBlob: Codeunit "Temp Blob"; var DownloadInStream: InStream)
     var
         DataCompression: Codeunit "Data Compression";
@@ -182,10 +200,7 @@ codeunit 50100 "ECB Import"
     var
         CurrencyExchangeRate: Record "Currency Exchange Rate";
     begin
-        CurrencyExchangeRate.SetLoadFields("Currency Code", "Starting Date");
-        CurrencyExchangeRate.SetRange("Currency Code", CurrencyCode);
-        CurrencyExchangeRate.SetRange("Starting Date", StartingDate);
-        if not CurrencyExchangeRate.IsEmpty() then
+        if CurrencyExchangeRateExists(CurrencyCode, StartingDate) then
             exit;
 
         CurrencyExchangeRate.Init();
@@ -193,8 +208,11 @@ codeunit 50100 "ECB Import"
         CurrencyExchangeRate."Starting Date" := StartingDate;
         CurrencyExchangeRate.Validate("Exchange Rate Amount", 1);
         CurrencyExchangeRate.Validate("Relational Exch. Rate Amount", ExchangeRateAmount);
+        CurrencyExchangeRate.Validate("Adjustment Exch. Rate Amount", 1);
+        CurrencyExchangeRate.Validate("Relational Adjmt Exch Rate Amt", ExchangeRateAmount);
         CurrencyExchangeRate.Insert(true);
 
         SelectedECBSummaryHandler.IncrementRecordsInserted();
     end;
+
 }
