@@ -3,3 +3,4 @@ temp*.*
 launch.json
 rad.json
 *.app
+*.g.xlf

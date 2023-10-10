@@ -34,18 +34,11 @@ codeunit 50100 "ECB Import"
     procedure ImportExchangeRates(ShowProgress: Boolean; ShowSummary: Boolean)
     var
         ECBImportUI: Enum "ECB Import UI";
-        ECBProgressHandler: Interface "ECB Progress Handler";
-        ECBSummaryHandler: Interface "ECB Summary Handler";
     begin
-        ECBProgressHandler := ECBImportUI::HideUI;
-        ECBSummaryHandler := ECBImportUI::HideUI;
-
         if ShowProgress then
-            ECBProgressHandler := ECBImportUI::ShowUI;
-        if ShowSummary then
-            ECBSummaryHandler := ECBImportUI::ShowUI;
+            ECBImportUI := ECBImportUI::ShowUI;
 
-        ImportExchangeRates(ECBProgressHandler, ECBSummaryHandler);
+        ImportExchangeRates(ECBImportUI);
     end;
 
     procedure ImportExchangeRates(ECBImportUI: Enum "ECB Import UI")
@@ -144,7 +137,6 @@ codeunit 50100 "ECB Import"
     local procedure DecompressFile(var TempBlob: Codeunit "Temp Blob"; var DownloadInStream: InStream)
     var
         DataCompression: Codeunit "Data Compression";
-        LengthOfCSV: Integer;
         NumberOfFilesErr: Label 'Unexpected number of files in zip archive';
         FileList: List of [Text];
         OutStream: OutStream;
@@ -155,7 +147,7 @@ codeunit 50100 "ECB Import"
             Error(NumberOfFilesErr);
 
         TempBlob.CreateOutStream(OutStream);
-        DataCompression.ExtractEntry(FileList.Get(1), OutStream, LengthOfCSV);
+        DataCompression.ExtractEntry(FileList.Get(1), OutStream);
     end;
 
     local procedure DownloadFile(var InStream: InStream): Boolean
