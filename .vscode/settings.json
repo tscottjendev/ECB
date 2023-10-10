@@ -42,7 +42,6 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.al": true
     },
-    "al.inlayhints.functionReturnTypes.enabled": false,
     "al.compilationOptions": {
         
     },
