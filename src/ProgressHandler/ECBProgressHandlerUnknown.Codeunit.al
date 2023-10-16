@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 codeunit 50102 "ECB Progress Handler Unknown" implements "ECB Progress Handler"
 {
     var

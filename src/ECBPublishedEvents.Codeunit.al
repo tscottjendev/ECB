@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 codeunit 50109 "ECB Published Events"
 {
 

@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 codeunit 50100 "ECB Import"
 {
     Access = Public;

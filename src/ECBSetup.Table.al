@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 table 50100 "ECB Setup"
 {
     Access = Internal;
@@ -14,6 +16,10 @@ table 50100 "ECB Setup"
         field(10; "Download URL"; Text[250])
         {
             Caption = 'Download URL';
+        }
+        field(11; "Last Exchange Date Imported"; Date)
+        {
+            Caption = 'Last Exchange Date Imported';
         }
     }
 
@@ -93,8 +99,8 @@ table 50100 "ECB Setup"
     internal procedure TestSetupForImport()
     begin
         TestDownloadURL();
-        OnTestSetupForImport();
 
+        OnTestSetupForImport();
     end;
 
     local procedure TestDownloadURL()

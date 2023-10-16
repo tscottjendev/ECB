@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 permissionset 50100 ECBFull
 {
     Assignable = true;

@@ -23,6 +23,16 @@
 			"justification": "The app.json file must specify an Azure Application Insights resource with the property 'applicationInsightsConnectionString' for monitoring operations related to this extension. See https://learn.microsoft.com/dynamics365/business-central/dev-itpro/administration/telemetry-overview for additional information."
 		},
         {
+            "id": "LC0003",
+            "action": "Hidden",
+            "justification": "Do not use an Object ID for properties or variables declaration. Use <objectName> instead. - Disable, Namespacing issue"
+        },
+        {
+            "id": "LC0005",
+            "action": "Hidden",
+            "justification": "Wrong casing detected! Use <properName> instead. - Disable, Namespacing issue"
+        },
+        {
             "id": "LC0009",
             "action": "Hidden",
             "justification": "Show info message about code metrics for each function or trigger - Enable"

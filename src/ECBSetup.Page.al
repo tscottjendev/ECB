@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 page 50100 "ECB Setup"
 {
     ApplicationArea = All;
@@ -17,6 +19,10 @@ page 50100 "ECB Setup"
                 field("Download URL"; Rec."Download URL")
                 {
                     ToolTip = 'Specifies the download URL to the ECB historical rates file.';
+                }
+                field("Last Exchange Date Imported"; Rec."Last Exchange Date Imported")
+                {
+                    ToolTip = 'Specifies the last exchange date for which the ECB historical rates file was imported.';
                 }
             }
         }

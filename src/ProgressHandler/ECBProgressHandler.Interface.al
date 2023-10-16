@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 interface "ECB Progress Handler"
 {
     procedure CloseProgress();

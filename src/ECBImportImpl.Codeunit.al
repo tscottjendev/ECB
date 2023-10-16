@@ -1,9 +1,13 @@
+namespace Jendev.Finance.Currency;
+
+using System.IO;
+
 codeunit 50110 "ECB Import Impl."
 {
     Access = Internal;
     Permissions =
-        tabledata Currency = rim,
-        tabledata "Currency Exchange Rate" = rim;
+        tabledata Microsoft.Finance.Currency.Currency = rim,
+        tabledata Microsoft.Finance.Currency."Currency Exchange Rate" = rim;
 
     var
         ECBSetup: Record "ECB Setup";
@@ -54,11 +58,9 @@ codeunit 50110 "ECB Import Impl."
 
     procedure ImportExchangeRates(ECBProgressHandler: Interface "ECB Progress Handler"; ECBSummaryHandler: Interface "ECB Summary Handler")
     var
-        TempCSVBuffer: Record "CSV Buffer" temporary;
-        TempBlob: Codeunit "Temp Blob";
-        CurrencyCode: Code[10];
+        TempCSVBuffer: Record System.IO."CSV Buffer" temporary;
+        TempBlob: Codeunit System.Utilities."Temp Blob";
         DownloadInStream: InStream;
-        Column: Integer;
         DownloadErr: Label 'Failed to download ECB file. \%1', Comment = '%1 is the error message from the HTTP client';
     begin
         SelectedECBProgressHandler := ECBProgressHandler;
@@ -75,18 +77,41 @@ codeunit 50110 "ECB Import Impl."
 
         DecompressFile(TempBlob, DownloadInStream);
         FillCSVBuffer(TempCSVBuffer, TempBlob);
-        for Column := 2 to TempCSVBuffer.GetNumberOfColumns() do begin
-            TempCSVBuffer.Get(1, Column);
-            CurrencyCode := CopyStr(TempCSVBuffer.Value, 1, MaxStrLen(CurrencyCode));
-            SelectedECBProgressHandler.UpdateProgress(CurrencyCode);
-            CreateCurrencyAndExchangeRate(TempCSVBuffer, CurrencyCode, Column);
-        end;
+        if ProcessCurrencies(TempCSVBuffer) then
+            UpdateLastExchangeDateImported(TempCSVBuffer);
 
         SelectedECBProgressHandler.CloseProgress();
         SelectedECBSummaryHandler.ShowSummary();
     end;
 
-    local procedure CreateCurrencyAndExchangeRate(var TempCSVBuffer: Record "CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer)
+    local procedure AlreadyImported(var TempCSVBuffer: Record System.IO."CSV Buffer" temporary; LastExchangeDateImported: Date): Boolean
+    var
+        StartingDate: Date;
+    begin
+        TempCSVBuffer.Get(2, 1);
+        if not ConvertToDate(StartingDate, TempCSVBuffer.Value) then
+            exit(true);
+
+        exit(StartingDate <= LastExchangeDateImported);
+    end;
+
+    local procedure AlreadyImportedNotificationId(): Guid
+    begin
+        exit('55496929-118d-4e3a-89c6-b937452922af');
+    end;
+
+    local procedure ConvertToDate(var StartingDate: Date; Value: Text[250]): Boolean
+    begin
+        exit(Evaluate(StartingDate, Value, 9));
+    end;
+
+    local procedure ConvertToDecimal(var ExchangeRateAmount: Decimal; Value: Text[250]): Boolean
+    begin
+        exit(Evaluate(ExchangeRateAmount, Value, 9));
+
+    end;
+
+    local procedure CreateCurrencyAndExchangeRate(var TempCSVBuffer: Record System.IO."CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer)
     var
         Line: Integer;
     begin
@@ -100,17 +125,20 @@ codeunit 50110 "ECB Import Impl."
         end;
     end;
 
-    local procedure CreateCurrencyExchangeRate(var TempCSVBuffer: Record "CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer; Line: Integer)
+    local procedure CreateCurrencyExchangeRate(var TempCSVBuffer: Record System.IO."CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer; Line: Integer)
     var
         StartingDate: Date;
         ExchangeRateAmount: Decimal;
     begin
         TempCSVBuffer.Get(Line, 1);
-        if not Evaluate(StartingDate, TempCSVBuffer.Value, 9) then
+        if not ConvertToDate(StartingDate, TempCSVBuffer.Value) then
+            exit;
+
+        if StartingDate <= ECBSetup."Last Exchange Date Imported" then
             exit;
 
         TempCSVBuffer.Get(Line, Column);
-        if not Evaluate(ExchangeRateAmount, TempCSVBuffer.Value, 9) then
+        if not ConvertToDecimal(ExchangeRateAmount, TempCSVBuffer.Value) then
             exit;
 
         InsertCurrencyExchangeRate(CurrencyCode, StartingDate, ExchangeRateAmount);
@@ -118,7 +146,7 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure CurrencyExchangeRateExists(var CurrencyCode: Code[10]; var StartingDate: Date): Boolean
     var
-        CurrencyExchangeRate: Record "Currency Exchange Rate";
+        CurrencyExchangeRate: Record Microsoft.Finance.Currency."Currency Exchange Rate";
         ECBPublishedEvents: Codeunit "ECB Published Events";
         IsHandled: Boolean;
         ReturnValue: Boolean;
@@ -131,12 +159,11 @@ codeunit 50110 "ECB Import Impl."
         CurrencyExchangeRate.SetRange("Currency Code", CurrencyCode);
         CurrencyExchangeRate.SetRange("Starting Date", StartingDate);
         exit(not CurrencyExchangeRate.IsEmpty());
-
     end;
 
-    local procedure DecompressFile(var TempBlob: Codeunit "Temp Blob"; var DownloadInStream: InStream)
+    local procedure DecompressFile(var TempBlob: Codeunit System.Utilities."Temp Blob"; var DownloadInStream: InStream)
     var
-        DataCompression: Codeunit "Data Compression";
+        DataCompression: Codeunit System.IO."Data Compression";
         NumberOfFilesErr: Label 'Unexpected number of files in zip archive';
         FileList: List of [Text];
         OutStream: OutStream;
@@ -164,7 +191,7 @@ codeunit 50110 "ECB Import Impl."
         exit(HttpResponseMessage.Content.ReadAs(InStream));
     end;
 
-    local procedure FillCSVBuffer(var TempCSVBuffer: Record "CSV Buffer" temporary; var TempBlob: Codeunit "Temp Blob")
+    local procedure FillCSVBuffer(var TempCSVBuffer: Record System.IO."CSV Buffer" temporary; var TempBlob: Codeunit System.Utilities."Temp Blob")
     var
         InStream: InStream;
         SeparatorTok: Label ',';
@@ -175,8 +202,11 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure InsertCurrency(CurrencyCode: Code[10])
     var
-        Currency: Record Currency;
+        Currency: Record Microsoft.Finance.Currency.Currency;
     begin
+        if IsLocalCurrency(CurrencyCode) then
+            exit;
+
         Currency.SetLoadFields(Code);
         Currency.SetRange(Code, CurrencyCode);
         if not Currency.IsEmpty() then
@@ -190,7 +220,7 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure InsertCurrencyExchangeRate(CurrencyCode: Code[10]; StartingDate: Date; ExchangeRateAmount: Decimal)
     var
-        CurrencyExchangeRate: Record "Currency Exchange Rate";
+        CurrencyExchangeRate: Record Microsoft.Finance.Currency."Currency Exchange Rate";
     begin
         if CurrencyExchangeRateExists(CurrencyCode, StartingDate) then
             exit;
@@ -205,6 +235,54 @@ codeunit 50110 "ECB Import Impl."
         CurrencyExchangeRate.Insert(true);
 
         SelectedECBSummaryHandler.IncrementRecordsInserted();
+    end;
+
+    local procedure IsLocalCurrency(CurrencyCode: Code[10]): Boolean
+    var
+        GeneralLedgerSetup: Record Microsoft.Finance.GeneralLedger.Setup."General Ledger Setup";
+    begin
+        GeneralLedgerSetup.SetLoadFields("LCY Code");
+        GeneralLedgerSetup.Get();
+        exit(CurrencyCode = GeneralLedgerSetup."LCY Code");
+    end;
+
+    local procedure NotifyAlreadyImported(LastImportedExchangeDate: Date)
+    var
+        AlreadyImportedNotification: Notification;
+        AlreadyImportedMsg: Label 'The ECB file has already been imported for %1', Comment = '%1 is the last imported exchange date';
+    begin
+        AlreadyImportedNotification.Id := AlreadyImportedNotificationId();
+        if AlreadyImportedNotification.Recall() then;
+
+        AlreadyImportedNotification.Message(StrSubstNo(AlreadyImportedMsg, LastImportedExchangeDate));
+        AlreadyImportedNotification.Send();
+    end;
+
+    local procedure ProcessCurrencies(var TempCSVBuffer: Record System.IO."CSV Buffer" temporary): Boolean
+    var
+        CurrencyCode: Code[10];
+        Column: Integer;
+    begin
+        if AlreadyImported(TempCSVBuffer, ECBSetup."Last Exchange Date Imported") then begin
+            NotifyAlreadyImported(ECBSetup."Last Exchange Date Imported");
+            exit(false);
+        end;
+
+        for Column := 2 to TempCSVBuffer.GetNumberOfColumns() do begin
+            TempCSVBuffer.Get(1, Column);
+            CurrencyCode := CopyStr(TempCSVBuffer.Value, 1, MaxStrLen(CurrencyCode));
+            SelectedECBProgressHandler.UpdateProgress(CurrencyCode);
+            CreateCurrencyAndExchangeRate(TempCSVBuffer, CurrencyCode, Column);
+        end;
+
+        exit(true);
+    end;
+
+    local procedure UpdateLastExchangeDateImported(var TempCSVBuffer: Record System.IO."CSV Buffer" temporary)
+    begin
+        TempCSVBuffer.Get(2, 1);
+        ConvertToDate(ECBSetup."Last Exchange Date Imported", TempCSVBuffer.Value);
+        ECBSetup.Modify(true);
     end;
 
 }
