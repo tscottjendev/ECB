@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 codeunit 50106 "ECB Summary Handler Unknown" implements "ECB Summary Handler"
 {
     var

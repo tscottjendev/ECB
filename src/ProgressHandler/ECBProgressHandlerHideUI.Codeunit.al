@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 codeunit 50104 "ECB Progress Handler Hide UI" implements "ECB Progress Handler"
 {
 

@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 report 50100 "ECB Import"
 {
     ApplicationArea = All;

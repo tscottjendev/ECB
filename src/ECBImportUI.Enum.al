@@ -1,3 +1,5 @@
+namespace Jendev.Finance.Currency;
+
 enum 50100 "ECB Import UI" implements "ECB Progress Handler"
     , "ECB Summary Handler"
 {
