@@ -68,7 +68,7 @@ codeunit 50110 "ECB Import Impl."
         ECBSetup.GetRecordOnce();
         ECBSetup.TestSetupForImport();
 
-        TempBlob.CreateInStream(DownloadInStream);
+        DownloadInStream := TempBlob.CreateInStream();
         DownloadFile(DownloadInStream);
 
         DecompressFile(TempBlob, DownloadInStream);
@@ -168,6 +168,7 @@ codeunit 50110 "ECB Import Impl."
 
         TempBlob.CreateOutStream(OutStream);
         DataCompression.ExtractEntry(FileList.Get(1), OutStream);
+        DataCompression.CloseZipArchive();
     end;
 
     local procedure DownloadFile(var InStream: InStream)
