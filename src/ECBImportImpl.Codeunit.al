@@ -120,21 +120,18 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure CreateCurrencyExchangeRate(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer; Line: Integer)
     var
-        StartingDate: Date;
-        ExchangeRateAmount: Decimal;
+        ExchangeRateDate: Date;
+        ExchangeRateFactor: Decimal;
     begin
-        TempECBCSVBuffer.Get(Line, 1);
-        if not TempECBCSVBuffer.Convert(StartingDate) then
+        if not GetExchangeRateDate(TempECBCSVBuffer, Line, ExchangeRateDate) then
+            exit;
+        if ExchangeRateDate <= ECBSetup."Last Exchange Date Imported" then
             exit;
 
-        if StartingDate <= ECBSetup."Last Exchange Date Imported" then
+        if not GetExchangeRateFactor(TempECBCSVBuffer, Column, Line, ExchangeRateFactor) then
             exit;
 
-        TempECBCSVBuffer.Get(Line, Column);
-        if not TempECBCSVBuffer.Convert(ExchangeRateAmount) then
-            exit;
-
-        InsertCurrencyExchangeRate(CurrencyCode, StartingDate, ExchangeRateAmount);
+        InsertCurrencyExchangeRate(CurrencyCode, ExchangeRateDate, ExchangeRateFactor);
     end;
 
     local procedure CurrencyExchangeRateExists(var CurrencyCode: Code[10]; var StartingDate: Date): Boolean
@@ -199,6 +196,18 @@ codeunit 50110 "ECB Import Impl."
         TempECBCSVBuffer.LoadDataFromStream(InStream, SeparatorTok);
     end;
 
+    local procedure GetExchangeRateDate(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Line: Integer; var ExchangeRateDate: Date): Boolean
+    begin
+        TempECBCSVBuffer.Get(Line, 1);
+        exit(TempECBCSVBuffer.Convert(ExchangeRateDate));
+    end;
+
+    local procedure GetExchangeRateFactor(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Column: Integer; Line: Integer; var ExchangeRateAmount: Decimal): Boolean
+    begin
+        TempECBCSVBuffer.Get(Line, Column);
+        exit(TempECBCSVBuffer.Convert(ExchangeRateAmount));
+    end;
+
     local procedure InsertCurrency(CurrencyCode: Code[10])
     var
         Currency: Record Microsoft.Finance.Currency.Currency;
@@ -217,7 +226,7 @@ codeunit 50110 "ECB Import Impl."
         Currency.Insert(true);
     end;
 
-    local procedure InsertCurrencyExchangeRate(CurrencyCode: Code[10]; StartingDate: Date; ExchangeRateAmount: Decimal)
+    local procedure InsertCurrencyExchangeRate(CurrencyCode: Code[10]; StartingDate: Date; Factor: Decimal)
     var
         CurrencyExchangeRate: Record Microsoft.Finance.Currency."Currency Exchange Rate";
     begin
@@ -228,9 +237,9 @@ codeunit 50110 "ECB Import Impl."
         CurrencyExchangeRate."Currency Code" := CurrencyCode;
         CurrencyExchangeRate."Starting Date" := StartingDate;
         CurrencyExchangeRate.Validate("Exchange Rate Amount", 1);
-        CurrencyExchangeRate.Validate("Relational Exch. Rate Amount", ExchangeRateAmount);
+        CurrencyExchangeRate.Validate("Relational Exch. Rate Amount", Factor);
         CurrencyExchangeRate.Validate("Adjustment Exch. Rate Amount", 1);
-        CurrencyExchangeRate.Validate("Relational Adjmt Exch Rate Amt", ExchangeRateAmount);
+        CurrencyExchangeRate.Validate("Relational Adjmt Exch Rate Amt", Factor);
         CurrencyExchangeRate.Insert(true);
 
         SelectedECBSummaryHandler.IncrementRecordsInserted();
