@@ -13,19 +13,8 @@ codeunit 50110 "ECB Import Impl."
         SelectedECBSummaryHandler: Interface "ECB Summary Handler";
 
     procedure ImportExchangeRates()
-    var
-        ECBImportUI: Enum "ECB Import UI";
-        ECBProgressHandler: Interface "ECB Progress Handler";
-        ECBSummaryHandler: Interface "ECB Summary Handler";
     begin
-        ECBImportUI := ECBImportUI::HideUI;
-        if GuiAllowed() then
-            ECBImportUI := ECBImportUI::ShowUI;
-
-        ECBProgressHandler := ECBImportUI;
-        ECBSummaryHandler := ECBImportUI;
-
-        ImportExchangeRates(ECBProgressHandler, ECBSummaryHandler);
+        ImportExchangeRates(SetProgressHandler(), SetSummaryHandler());
     end;
 
     procedure ImportExchangeRates(ShowProgress: Boolean)
@@ -34,24 +23,18 @@ codeunit 50110 "ECB Import Impl."
     end;
 
     procedure ImportExchangeRates(ShowProgress: Boolean; ShowSummary: Boolean)
-    var
-        ECBImportUI: Enum "ECB Import UI";
     begin
-        if ShowProgress then
-            ECBImportUI := ECBImportUI::ShowUI;
-
-        ImportExchangeRates(ECBImportUI);
+        ImportExchangeRates(SetProgressHandler(ShowProgress), SetSummaryHandler(ShowSummary));
     end;
 
     procedure ImportExchangeRates(ECBImportUI: Enum "ECB Import UI")
-    var
-        ECBProgressHandler: Interface "ECB Progress Handler";
-        ECBSummaryHandler: Interface "ECB Summary Handler";
     begin
-        ECBProgressHandler := ECBImportUI;
-        ECBSummaryHandler := ECBImportUI;
+        ImportExchangeRates(ECBImportUI, ECBImportUI);
+    end;
 
-        ImportExchangeRates(ECBProgressHandler, ECBSummaryHandler);
+    procedure ImportExchangeRates(ProgressECBImportUI: Enum "ECB Import UI"; SummaryECBImportUI: Enum "ECB Import UI")
+    begin
+        ImportExchangeRates(ProgressECBImportUI, SummaryECBImportUI);
     end;
 
     procedure ImportExchangeRates(ECBProgressHandler: Interface "ECB Progress Handler"; ECBSummaryHandler: Interface "ECB Summary Handler")
@@ -65,8 +48,7 @@ codeunit 50110 "ECB Import Impl."
 
         SelectedECBProgressHandler.OpenProgress();
 
-        ECBSetup.GetRecordOnce();
-        ECBSetup.TestSetupForImport();
+        TestSetup();
 
         DownloadInStream := TempBlob.CreateInStream();
         DownloadFile(DownloadInStream);
@@ -83,20 +65,12 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure AlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary): Boolean
     begin
-        if AlreadyImported(TempECBCSVBuffer, ECBSetup."Last Exchange Date Imported") then begin
-            NotifyAlreadyImported(ECBSetup."Last Exchange Date Imported");
+        if IsDateAlreadyImported(TempECBCSVBuffer, GetLastExchangeDateImported()) then begin
+            NotifyAlreadyImported(GetLastExchangeDateImported());
             exit(true);
         end;
 
         exit(false);
-    end;
-
-    local procedure AlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; LastExchangeDateImported: Date): Boolean
-    var
-        StartingDate: Date;
-    begin
-        StartingDate := TempECBCSVBuffer.GetLatestExchangeRateDate();
-        exit(StartingDate <= LastExchangeDateImported);
     end;
 
     local procedure AlreadyImportedNotificationId(): Guid
@@ -123,12 +97,12 @@ codeunit 50110 "ECB Import Impl."
         ExchangeRateDate: Date;
         ExchangeRateFactor: Decimal;
     begin
-        if not GetExchangeRateDate(TempECBCSVBuffer, Line, ExchangeRateDate) then
+        if not GetExchangeRateDateFromCSV(TempECBCSVBuffer, Line, ExchangeRateDate) then
             exit;
-        if ExchangeRateDate <= ECBSetup."Last Exchange Date Imported" then
+        if ExchangeRateDate <= GetLastExchangeDateImported() then
             exit;
 
-        if not GetExchangeRateFactor(TempECBCSVBuffer, Column, Line, ExchangeRateFactor) then
+        if not GetExchangeRateFactorFromCSV(TempECBCSVBuffer, Column, Line, ExchangeRateFactor) then
             exit;
 
         InsertCurrencyExchangeRate(CurrencyCode, ExchangeRateDate, ExchangeRateFactor);
@@ -177,7 +151,7 @@ codeunit 50110 "ECB Import Impl."
         ECBDownloadErr: Label 'Failed to download ECB file. ', Comment = 'The space at the end is required.';
         ResponseErr: Label '%1 The server returned an error. Status: %2 %3', Comment = '%1 is the default error text,  %2 is the status code, %3 is the reason phrase';
     begin
-        if not HttpClient.Get(ECBSetup."Download URL", HttpResponseMessage) then
+        if not HttpClient.Get(GetDownloadURL(), HttpResponseMessage) then
             Error(ConnectionErr, ECBDownloadErr);
 
         if not HttpResponseMessage.IsSuccessStatusCode() then
@@ -196,16 +170,28 @@ codeunit 50110 "ECB Import Impl."
         TempECBCSVBuffer.LoadDataFromStream(InStream, SeparatorTok);
     end;
 
-    local procedure GetExchangeRateDate(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Line: Integer; var ExchangeRateDate: Date): Boolean
+    local procedure GetDownloadURL(): Text
+    begin
+        ECBSetup.GetRecordOnce();
+        exit(ECBSetup."Download URL");
+    end;
+
+    local procedure GetExchangeRateDateFromCSV(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Line: Integer; var ExchangeRateDate: Date): Boolean
     begin
         TempECBCSVBuffer.Get(Line, 1);
         exit(TempECBCSVBuffer.Convert(ExchangeRateDate));
     end;
 
-    local procedure GetExchangeRateFactor(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Column: Integer; Line: Integer; var ExchangeRateAmount: Decimal): Boolean
+    local procedure GetExchangeRateFactorFromCSV(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Column: Integer; Line: Integer; var ExchangeRateAmount: Decimal): Boolean
     begin
         TempECBCSVBuffer.Get(Line, Column);
         exit(TempECBCSVBuffer.Convert(ExchangeRateAmount));
+    end;
+
+    local procedure GetLastExchangeDateImported(): Date
+    begin
+        ECBSetup.GetRecordOnce();
+        exit(ECBSetup."Last Exchange Date Imported");
     end;
 
     local procedure InsertCurrency(CurrencyCode: Code[10])
@@ -245,6 +231,14 @@ codeunit 50110 "ECB Import Impl."
         SelectedECBSummaryHandler.IncrementRecordsInserted();
     end;
 
+    local procedure IsDateAlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; LastExchangeDateImported: Date): Boolean
+    var
+        StartingDate: Date;
+    begin
+        StartingDate := TempECBCSVBuffer.GetLatestExchangeRateDate();
+        exit(StartingDate <= LastExchangeDateImported);
+    end;
+
     local procedure IsLocalCurrency(CurrencyCode: Code[10]): Boolean
     var
         GeneralLedgerSetup: Record Microsoft.Finance.GeneralLedger.Setup."General Ledger Setup";
@@ -279,6 +273,44 @@ codeunit 50110 "ECB Import Impl."
         end;
 
         exit(true);
+    end;
+
+    local procedure SetProgressHandler(): Interface "ECB Progress Handler"
+    begin
+        exit(SetProgressHandler(GuiAllowed()));
+    end;
+
+    local procedure SetProgressHandler(ShowProgress: Boolean): Interface "ECB Progress Handler"
+    var
+        ECBImportUI: Enum "ECB Import UI";
+    begin
+        ECBImportUI := ECBImportUI::HideUI;
+        if ShowProgress then
+            ECBImportUI := ECBImportUI::ShowUI;
+
+        exit(ECBImportUI);
+    end;
+
+    local procedure SetSummaryHandler(): Interface "ECB Summary Handler"
+    begin
+        exit(SetSummaryHandler(GuiAllowed()));
+    end;
+
+    local procedure SetSummaryHandler(ShowSummary: Boolean): Interface "ECB Summary Handler"
+    var
+        ECBImportUI: Enum "ECB Import UI";
+    begin
+        ECBImportUI := ECBImportUI::HideUI;
+        if ShowSummary then
+            ECBImportUI := ECBImportUI::ShowUI;
+
+        exit(ECBImportUI);
+    end;
+
+    local procedure TestSetup()
+    begin
+        ECBSetup.GetRecordOnce();
+        ECBSetup.TestSetupForImport();
     end;
 
     local procedure UpdateLastExchangeDateImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary)

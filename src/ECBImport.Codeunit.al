@@ -17,7 +17,7 @@ codeunit 50100 "ECB Import"
     end;
 
     /// <summary>
-    /// Import exchange rates from the European Central Bank.  Using default UI experience based on whether or not GUI is allowed.
+    /// Import exchange rates from the European Central Bank.
     /// </summary>
     /// <param name="ShowProgress">Whether or not to show the progress and summary dialogs.</param>
     procedure ImportExchangeRates(ShowProgress: Boolean)
@@ -28,7 +28,7 @@ codeunit 50100 "ECB Import"
     end;
 
     /// <summary>
-    /// Import exchange rates from the European Central Bank.  Using default UI experience based on whether or not GUI is allowed.
+    /// Import exchange rates from the European Central Bank.
     /// </summary>
     /// <param name="ShowProgress">Whether or not to show the progress dialog.</param>
     /// <param name="ShowSummary">Whether or not to show the summary dialog.</param>
@@ -39,6 +39,10 @@ codeunit 50100 "ECB Import"
         ECBImportImpl.ImportExchangeRates(ShowProgress, ShowSummary);
     end;
 
+    /// <summary>
+    /// Import exchange rates from the European Central Bank.
+    /// </summary>
+    /// <param name="ECBImportUI">The progress and summary dialog to use.</param>
     procedure ImportExchangeRates(ECBImportUI: Enum "ECB Import UI")
     var
         ECBImportImpl: Codeunit "ECB Import Impl.";
@@ -46,6 +50,21 @@ codeunit 50100 "ECB Import"
         ECBImportImpl.ImportExchangeRates(ECBImportUI);
     end;
 
+    /// <summary>
+    /// Import exchange rates from the European Central Bank.
+    /// </summary>
+    /// <param name="ProgressECBImportUI">The progress dialog to use.</param>
+    /// <param name="SummaryECBImportUI">The summary dialog to use.</param>
+    procedure ImportExchangeRates(ProgressECBImportUI: Enum "ECB Import UI"; SummaryECBImportUI: Enum "ECB Import UI")
+    begin
+        ImportExchangeRates(ProgressECBImportUI, SummaryECBImportUI);
+    end;
+
+    /// <summary>
+    /// Import exchange rates from the European Central Bank.
+    /// </summary>
+    /// <param name="ECBProgressHandler">The progress dialog to use.</param>
+    /// <param name="ECBSummaryHandler">The summary dialog to use.</param>
     procedure ImportExchangeRates(ECBProgressHandler: Interface "ECB Progress Handler"; ECBSummaryHandler: Interface "ECB Summary Handler")
     var
         ECBImportImpl: Codeunit "ECB Import Impl.";

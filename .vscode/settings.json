@@ -47,5 +47,6 @@
     },
     "al.packageCachePath": [
         "./.alpackages"
-    ]
+    ],
+    "alOutline.enableCodeCopFixes": true
 }
