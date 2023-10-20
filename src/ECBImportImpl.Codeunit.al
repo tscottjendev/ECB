@@ -43,10 +43,7 @@ codeunit 50110 "ECB Import Impl."
         TempBlob: Codeunit System.Utilities."Temp Blob";
         DownloadInStream: InStream;
     begin
-        SelectedECBProgressHandler := ECBProgressHandler;
-        SelectedECBSummaryHandler := ECBSummaryHandler;
-
-        SelectedECBProgressHandler.OpenProgress();
+        OpenUI(ECBProgressHandler, ECBSummaryHandler);
 
         TestSetup();
 
@@ -55,12 +52,13 @@ codeunit 50110 "ECB Import Impl."
 
         DecompressFile(TempBlob, DownloadInStream);
         FillECBBuffer(TempECBCSVBuffer, TempBlob);
-        if not AlreadyImported(TempECBCSVBuffer) then
-            if ProcessCurrencies(TempECBCSVBuffer) then
-                UpdateLastExchangeDateImported(TempECBCSVBuffer);
+        if AlreadyImported(TempECBCSVBuffer) then
+            exit;
 
-        SelectedECBProgressHandler.CloseProgress();
-        SelectedECBSummaryHandler.ShowSummary();
+        if ProcessCurrencies(TempECBCSVBuffer) then
+            UpdateLastExchangeDateImported(TempECBCSVBuffer);
+
+        CloseUI();
     end;
 
     local procedure AlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary): Boolean
@@ -76,6 +74,12 @@ codeunit 50110 "ECB Import Impl."
     local procedure AlreadyImportedNotificationId(): Guid
     begin
         exit('55496929-118d-4e3a-89c6-b937452922af');
+    end;
+
+    local procedure CloseUI()
+    begin
+        SelectedECBProgressHandler.CloseProgress();
+        SelectedECBSummaryHandler.ShowSummary();
     end;
 
     local procedure CreateCurrencyAndExchangeRate(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; CurrencyCode: Code[10]; Column: Integer)
@@ -101,7 +105,6 @@ codeunit 50110 "ECB Import Impl."
             exit;
         if ExchangeRateDate <= GetLastExchangeDateImported() then
             exit;
-
         if not GetExchangeRateFactorFromCSV(TempECBCSVBuffer, Column, Line, ExchangeRateFactor) then
             exit;
 
@@ -258,6 +261,13 @@ codeunit 50110 "ECB Import Impl."
 
         AlreadyImportedNotification.Message(StrSubstNo(AlreadyImportedMsg, LastImportedExchangeDate));
         AlreadyImportedNotification.Send();
+    end;
+
+    local procedure OpenUI(var ECBProgressHandler: Interface "ECB Progress Handler"; var ECBSummaryHandler: Interface "ECB Summary Handler")
+    begin
+        SelectedECBProgressHandler := ECBProgressHandler;
+        SelectedECBSummaryHandler := ECBSummaryHandler;
+        SelectedECBProgressHandler.OpenProgress();
     end;
 
     local procedure ProcessCurrencies(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary): Boolean
