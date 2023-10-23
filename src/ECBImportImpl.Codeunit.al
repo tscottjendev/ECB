@@ -17,9 +17,9 @@ codeunit 50110 "ECB Import Impl."
         ImportExchangeRates(SetProgressHandler(), SetSummaryHandler());
     end;
 
-    procedure ImportExchangeRates(ShowProgress: Boolean)
+    procedure ImportExchangeRates(ShowUI: Boolean)
     begin
-        ImportExchangeRates(ShowProgress, ShowProgress);
+        ImportExchangeRates(ShowUI, ShowUI);
     end;
 
     procedure ImportExchangeRates(ShowProgress: Boolean; ShowSummary: Boolean)
@@ -44,7 +44,7 @@ codeunit 50110 "ECB Import Impl."
     begin
         OpenUI(ECBProgressHandler, ECBSummaryHandler);
 
-        TestSetup();
+        TestECBSetup();
         DownloadFile(TempBlob);
         DecompressFile(TempBlob);
         FillECBBuffer(TempECBCSVBuffer, TempBlob);
@@ -320,7 +320,7 @@ codeunit 50110 "ECB Import Impl."
         exit(ECBImportUI);
     end;
 
-    local procedure TestSetup()
+    local procedure TestECBSetup()
     begin
         ECBSetup.GetRecordOnce();
         ECBSetup.TestSetupForImport();

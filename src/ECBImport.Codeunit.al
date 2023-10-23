@@ -19,12 +19,12 @@ codeunit 50100 "ECB Import"
     /// <summary>
     /// Import exchange rates from the European Central Bank.
     /// </summary>
-    /// <param name="ShowProgress">Whether or not to show the progress and summary dialogs.</param>
-    procedure ImportExchangeRates(ShowProgress: Boolean)
+    /// <param name="ShowUI">Whether or not to show the progress and summary dialogs.</param>
+    procedure ImportExchangeRates(ShowUI: Boolean)
     var
         ECBImportImpl: Codeunit "ECB Import Impl.";
     begin
-        ECBImportImpl.ImportExchangeRates(ShowProgress, ShowProgress);
+        ECBImportImpl.ImportExchangeRates(ShowUI);
     end;
 
     /// <summary>
