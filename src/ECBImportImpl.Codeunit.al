@@ -41,16 +41,12 @@ codeunit 50110 "ECB Import Impl."
     var
         TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary;
         TempBlob: Codeunit System.Utilities."Temp Blob";
-        DownloadInStream: InStream;
     begin
         OpenUI(ECBProgressHandler, ECBSummaryHandler);
 
         TestSetup();
-
-        DownloadInStream := TempBlob.CreateInStream();
-        DownloadFile(DownloadInStream);
-
-        DecompressFile(TempBlob, DownloadInStream);
+        DownloadFile(TempBlob);
+        DecompressFile(TempBlob);
         FillECBBuffer(TempECBCSVBuffer, TempBlob);
         if AlreadyImported(TempECBCSVBuffer) then
             exit;
@@ -63,8 +59,8 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure AlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary): Boolean
     begin
-        if IsDateAlreadyImported(TempECBCSVBuffer, GetLastExchangeDateImported()) then begin
-            NotifyAlreadyImported(GetLastExchangeDateImported());
+        if IsDateAlreadyImported(TempECBCSVBuffer, LastExchangeDateImported()) then begin
+            NotifyAlreadyImported(LastExchangeDateImported());
             exit(true);
         end;
 
@@ -103,7 +99,7 @@ codeunit 50110 "ECB Import Impl."
     begin
         if not GetExchangeRateDateFromCSV(TempECBCSVBuffer, Line, ExchangeRateDate) then
             exit;
-        if ExchangeRateDate <= GetLastExchangeDateImported() then
+        if ExchangeRateDate <= LastExchangeDateImported() then
             exit;
         if not GetExchangeRateFactorFromCSV(TempECBCSVBuffer, Column, Line, ExchangeRateFactor) then
             exit;
@@ -128,14 +124,16 @@ codeunit 50110 "ECB Import Impl."
         exit(not CurrencyExchangeRate.IsEmpty());
     end;
 
-    local procedure DecompressFile(var TempBlob: Codeunit System.Utilities."Temp Blob"; var DownloadInStream: InStream)
+    local procedure DecompressFile(var TempBlob: Codeunit System.Utilities."Temp Blob")
     var
         DataCompression: Codeunit System.IO."Data Compression";
+        InStream: InStream;
         NumberOfFilesErr: Label 'Unexpected number of files in zip archive';
         FileList: List of [Text];
         OutStream: OutStream;
     begin
-        DataCompression.OpenZipArchive(DownloadInStream, false);
+        TempBlob.CreateInStream(InStream);
+        DataCompression.OpenZipArchive(InStream, false);
         DataCompression.GetEntryList(FileList);
         if FileList.Count() <> 1 then
             Error(NumberOfFilesErr);
@@ -145,23 +143,34 @@ codeunit 50110 "ECB Import Impl."
         DataCompression.CloseZipArchive();
     end;
 
-    local procedure DownloadFile(var InStream: InStream)
+    local procedure DownloadFile(var TempBlob: Codeunit System.Utilities."Temp Blob")
     var
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
+        ContentInstream: InStream;
         ConnectionErr: Label '%1 Unable to connect to the server.  Ensure the download URL is correct.', Comment = '%1 is the default error text';
         ContentErr: Label '%1 The content was unable to be read.', Comment = '%1 is the default error text';
         ECBDownloadErr: Label 'Failed to download ECB file. ', Comment = 'The space at the end is required.';
         ResponseErr: Label '%1 The server returned an error. Status: %2 %3', Comment = '%1 is the default error text,  %2 is the status code, %3 is the reason phrase';
+        BlobOutStream: OutStream;
     begin
-        if not HttpClient.Get(GetDownloadURL(), HttpResponseMessage) then
+        if not HttpClient.Get(DownloadURL(), HttpResponseMessage) then
             Error(ConnectionErr, ECBDownloadErr);
 
         if not HttpResponseMessage.IsSuccessStatusCode() then
             Error(ResponseErr, ECBDownloadErr, HttpResponseMessage.HttpStatusCode, HttpResponseMessage.ReasonPhrase);
 
-        if not HttpResponseMessage.Content.ReadAs(InStream) then
+        if not HttpResponseMessage.Content.ReadAs(ContentInstream) then
             Error(ContentErr, ECBDownloadErr);
+
+        TempBlob.CreateOutStream(BlobOutStream);
+        CopyStream(BlobOutStream, ContentInstream);
+    end;
+
+    local procedure DownloadURL(): Text
+    begin
+        ECBSetup.GetRecordOnce();
+        exit(ECBSetup."Download URL");
     end;
 
     local procedure FillECBBuffer(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; var TempBlob: Codeunit System.Utilities."Temp Blob")
@@ -171,12 +180,6 @@ codeunit 50110 "ECB Import Impl."
     begin
         TempBlob.CreateInStream(InStream);
         TempECBCSVBuffer.LoadDataFromStream(InStream, SeparatorTok);
-    end;
-
-    local procedure GetDownloadURL(): Text
-    begin
-        ECBSetup.GetRecordOnce();
-        exit(ECBSetup."Download URL");
     end;
 
     local procedure GetExchangeRateDateFromCSV(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; Line: Integer; var ExchangeRateDate: Date): Boolean
@@ -189,12 +192,6 @@ codeunit 50110 "ECB Import Impl."
     begin
         TempECBCSVBuffer.Get(Line, Column);
         exit(TempECBCSVBuffer.Convert(ExchangeRateAmount));
-    end;
-
-    local procedure GetLastExchangeDateImported(): Date
-    begin
-        ECBSetup.GetRecordOnce();
-        exit(ECBSetup."Last Exchange Date Imported");
     end;
 
     local procedure InsertCurrency(CurrencyCode: Code[10])
@@ -249,6 +246,12 @@ codeunit 50110 "ECB Import Impl."
         GeneralLedgerSetup.SetLoadFields("LCY Code");
         GeneralLedgerSetup.Get();
         exit(CurrencyCode = GeneralLedgerSetup."LCY Code");
+    end;
+
+    local procedure LastExchangeDateImported(): Date
+    begin
+        ECBSetup.GetRecordOnce();
+        exit(ECBSetup."Last Exchange Date Imported");
     end;
 
     local procedure NotifyAlreadyImported(LastImportedExchangeDate: Date)
