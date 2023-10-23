@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB;
 
 report 50100 "ECB Import"
 {

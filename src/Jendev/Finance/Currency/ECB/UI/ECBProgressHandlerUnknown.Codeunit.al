@@ -1,23 +1,22 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB.UI;
 
-codeunit 50106 "ECB Summary Handler Unknown" implements "ECB Summary Handler"
+codeunit 50102 "ECB Progress Handler Unknown" implements "ECB Progress Handler"
 {
     var
         UnsupportedEnumValueErr: Label 'Unsupported Enum ''ECB Import UI'' Value';
 
-    procedure IncrementRecordsInserted()
+    procedure CloseProgress()
     begin
         Error(UnsupportedEnumValueErr);
     end;
 
-    procedure IncrementRecordsRead()
+    procedure OpenProgress()
     begin
         Error(UnsupportedEnumValueErr);
     end;
 
-    procedure ShowSummary();
+    procedure UpdateProgress(CurrencyCode: Code[10])
     begin
         Error(UnsupportedEnumValueErr);
     end;
-
 }

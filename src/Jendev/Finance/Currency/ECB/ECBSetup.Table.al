@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB;
 
 table 50100 "ECB Setup"
 {

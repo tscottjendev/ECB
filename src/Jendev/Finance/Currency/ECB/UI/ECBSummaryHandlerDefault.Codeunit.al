@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB.UI;
 
 codeunit 50105 "ECB Summary Handler Default" implements "ECB Summary Handler"
 {

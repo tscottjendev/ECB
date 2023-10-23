@@ -48,5 +48,6 @@
     "al.packageCachePath": [
         "./.alpackages"
     ],
-    "alOutline.enableCodeCopFixes": true
+    "alOutline.enableCodeCopFixes": true,
+    "CRS.ReorganizeByNamespace": true
 }
