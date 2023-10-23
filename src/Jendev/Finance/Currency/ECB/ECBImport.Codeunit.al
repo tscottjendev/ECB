@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB;
 
 codeunit 50100 "ECB Import"
 {
@@ -43,7 +43,7 @@ codeunit 50100 "ECB Import"
     /// Import exchange rates from the European Central Bank.
     /// </summary>
     /// <param name="ECBImportUI">The progress and summary dialog to use.</param>
-    procedure ImportExchangeRates(ECBImportUI: Enum "ECB Import UI")
+    procedure ImportExchangeRates(ECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI")
     var
         ECBImportImpl: Codeunit "ECB Import Impl.";
     begin
@@ -55,7 +55,7 @@ codeunit 50100 "ECB Import"
     /// </summary>
     /// <param name="ProgressECBImportUI">The progress dialog to use.</param>
     /// <param name="SummaryECBImportUI">The summary dialog to use.</param>
-    procedure ImportExchangeRates(ProgressECBImportUI: Enum "ECB Import UI"; SummaryECBImportUI: Enum "ECB Import UI")
+    procedure ImportExchangeRates(ProgressECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI"; SummaryECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI")
     begin
         ImportExchangeRates(ProgressECBImportUI, SummaryECBImportUI);
     end;
@@ -65,7 +65,7 @@ codeunit 50100 "ECB Import"
     /// </summary>
     /// <param name="ECBProgressHandler">The progress dialog to use.</param>
     /// <param name="ECBSummaryHandler">The summary dialog to use.</param>
-    procedure ImportExchangeRates(ECBProgressHandler: Interface "ECB Progress Handler"; ECBSummaryHandler: Interface "ECB Summary Handler")
+    procedure ImportExchangeRates(ECBProgressHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Progress Handler"; ECBSummaryHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Summary Handler")
     var
         ECBImportImpl: Codeunit "ECB Import Impl.";
     begin

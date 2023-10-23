@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB.UI;
 
 codeunit 50103 "ECB Progress Handler Show UI" implements "ECB Progress Handler"
 {

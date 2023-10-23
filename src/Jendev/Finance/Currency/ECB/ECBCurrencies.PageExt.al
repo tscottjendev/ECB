@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB;
 
 pageextension 50100 "ECB Currencies" extends Microsoft.Finance.Currency.Currencies
 {

@@ -1,4 +1,4 @@
-namespace Jendev.Finance.Currency;
+namespace Jendev.Finance.Currency.ECB;
 
 codeunit 50110 "ECB Import Impl."
 {
@@ -9,8 +9,8 @@ codeunit 50110 "ECB Import Impl."
 
     var
         ECBSetup: Record "ECB Setup";
-        SelectedECBProgressHandler: Interface "ECB Progress Handler";
-        SelectedECBSummaryHandler: Interface "ECB Summary Handler";
+        SelectedECBProgressHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Progress Handler";
+        SelectedECBSummaryHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Summary Handler";
 
     procedure ImportExchangeRates()
     begin
@@ -27,17 +27,17 @@ codeunit 50110 "ECB Import Impl."
         ImportExchangeRates(SetProgressHandler(ShowProgress), SetSummaryHandler(ShowSummary));
     end;
 
-    procedure ImportExchangeRates(ECBImportUI: Enum "ECB Import UI")
+    procedure ImportExchangeRates(ECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI")
     begin
         ImportExchangeRates(ECBImportUI, ECBImportUI);
     end;
 
-    procedure ImportExchangeRates(ProgressECBImportUI: Enum "ECB Import UI"; SummaryECBImportUI: Enum "ECB Import UI")
+    procedure ImportExchangeRates(ProgressECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI"; SummaryECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI")
     begin
         ImportExchangeRates(ProgressECBImportUI, SummaryECBImportUI);
     end;
 
-    procedure ImportExchangeRates(ECBProgressHandler: Interface "ECB Progress Handler"; ECBSummaryHandler: Interface "ECB Summary Handler")
+    procedure ImportExchangeRates(ECBProgressHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Progress Handler"; ECBSummaryHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Summary Handler")
     var
         TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary;
         TempBlob: Codeunit System.Utilities."Temp Blob";
@@ -231,12 +231,12 @@ codeunit 50110 "ECB Import Impl."
         SelectedECBSummaryHandler.IncrementRecordsInserted();
     end;
 
-    local procedure IsDateAlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; LastExchangeDateImported: Date): Boolean
+    local procedure IsDateAlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; LastDateImported: Date): Boolean
     var
         StartingDate: Date;
     begin
         StartingDate := TempECBCSVBuffer.GetLatestExchangeRateDate();
-        exit(StartingDate <= LastExchangeDateImported);
+        exit(StartingDate <= LastDateImported);
     end;
 
     local procedure IsLocalCurrency(CurrencyCode: Code[10]): Boolean
@@ -266,7 +266,7 @@ codeunit 50110 "ECB Import Impl."
         AlreadyImportedNotification.Send();
     end;
 
-    local procedure OpenUI(var ECBProgressHandler: Interface "ECB Progress Handler"; var ECBSummaryHandler: Interface "ECB Summary Handler")
+    local procedure OpenUI(var ECBProgressHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Progress Handler"; var ECBSummaryHandler: Interface Jendev.Finance.Currency.ECB.UI."ECB Summary Handler")
     begin
         SelectedECBProgressHandler := ECBProgressHandler;
         SelectedECBSummaryHandler := ECBSummaryHandler;
@@ -288,14 +288,14 @@ codeunit 50110 "ECB Import Impl."
         exit(true);
     end;
 
-    local procedure SetProgressHandler(): Interface "ECB Progress Handler"
+    local procedure SetProgressHandler(): Interface Jendev.Finance.Currency.ECB.UI."ECB Progress Handler"
     begin
         exit(SetProgressHandler(GuiAllowed()));
     end;
 
-    local procedure SetProgressHandler(ShowProgress: Boolean): Interface "ECB Progress Handler"
+    local procedure SetProgressHandler(ShowProgress: Boolean): Interface Jendev.Finance.Currency.ECB.UI."ECB Progress Handler"
     var
-        ECBImportUI: Enum "ECB Import UI";
+        ECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI";
     begin
         ECBImportUI := ECBImportUI::HideUI;
         if ShowProgress then
@@ -304,14 +304,14 @@ codeunit 50110 "ECB Import Impl."
         exit(ECBImportUI);
     end;
 
-    local procedure SetSummaryHandler(): Interface "ECB Summary Handler"
+    local procedure SetSummaryHandler(): Interface Jendev.Finance.Currency.ECB.UI."ECB Summary Handler"
     begin
         exit(SetSummaryHandler(GuiAllowed()));
     end;
 
-    local procedure SetSummaryHandler(ShowSummary: Boolean): Interface "ECB Summary Handler"
+    local procedure SetSummaryHandler(ShowSummary: Boolean): Interface Jendev.Finance.Currency.ECB.UI."ECB Summary Handler"
     var
-        ECBImportUI: Enum "ECB Import UI";
+        ECBImportUI: Enum Jendev.Finance.Currency.ECB.UI."ECB Import UI";
     begin
         ECBImportUI := ECBImportUI::HideUI;
         if ShowSummary then
