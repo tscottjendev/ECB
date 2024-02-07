@@ -15,7 +15,7 @@ codeunit 50106 "ECB Summary Handler Unknown" implements "ECB Summary Handler"
         Error(UnsupportedEnumValueErr);
     end;
 
-    procedure ShowSummary();
+    procedure ShowSummary()
     begin
         Error(UnsupportedEnumValueErr);
     end;

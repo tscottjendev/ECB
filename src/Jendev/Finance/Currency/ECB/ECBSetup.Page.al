@@ -36,7 +36,7 @@ page 50100 "ECB Setup"
             {
                 Caption = 'Set Default Data';
                 Image = CreateForm;
-                ToolTip = 'Sets the default data for the ECB Import';
+                ToolTip = 'Sets the default data for the ECB Import.';
                 Visible = IsSetDefaultDataActionVisible;
 
                 trigger OnAction()

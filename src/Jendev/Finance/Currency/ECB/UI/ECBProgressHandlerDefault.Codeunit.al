@@ -23,7 +23,7 @@ codeunit 50101 "ECB Progress Handler Default" implements "ECB Progress Handler"
         IsOpen := true;
     end;
 
-    procedure UpdateProgress(CurrencyCode: Code[10]);
+    procedure UpdateProgress(CurrencyCode: Code[10])
     begin
         if not IsOpen then
             exit;

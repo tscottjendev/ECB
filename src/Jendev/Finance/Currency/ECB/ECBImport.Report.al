@@ -23,13 +23,13 @@ report 50100 "ECB Import"
                     {
                         ApplicationArea = All;
                         Caption = 'Show Progress Window';
-                        ToolTip = 'If you want to see the progress of the import, set this option.  Do NOT set this option if you are scheduling the report or running the report through the job queue.';
+                        ToolTip = 'Specifies if you want to see the progress of the import, set this option.  Do NOT set this option if you are scheduling the report or running the report through the job queue.';
                     }
                     field(ShowSummaryField; ShowSummary)
                     {
                         ApplicationArea = All;
                         Caption = 'Show Summary Window';
-                        ToolTip = 'If you want to see the summary of the import after the report is complete, set this option.  Do NOT set this option if you are scheduling the report or running the report through the job queue.';
+                        ToolTip = 'Specifies if you want to see the summary of the import after the report is complete, set this option.  Do NOT set this option if you are scheduling or using the job queue.';
                     }
                 }
             }

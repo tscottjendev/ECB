@@ -13,7 +13,7 @@ codeunit 50107 "ECB Summary Handler Hide UI" implements "ECB Summary Handler"
 
     end;
 
-    procedure ShowSummary();
+    procedure ShowSummary()
     begin
 
     end;

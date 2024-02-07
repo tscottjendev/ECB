@@ -11,7 +11,7 @@ pageextension 50100 "ECB Currencies" extends Microsoft.Finance.Currency.Currenci
                 ApplicationArea = all;
                 Caption = 'Import from ECB';
                 Image = CurrencyExchangeRates;
-                ToolTip = 'Import EUR exchange rates from ECB';
+                ToolTip = 'Import EUR exchange rates from ECB.';
 
                 trigger OnAction()
                 var

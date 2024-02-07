@@ -14,7 +14,7 @@ codeunit 50105 "ECB Summary Handler Default" implements "ECB Summary Handler"
 
     end;
 
-    procedure ShowSummary();
+    procedure ShowSummary()
     begin
 
     end;
