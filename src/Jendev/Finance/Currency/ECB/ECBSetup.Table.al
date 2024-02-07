@@ -63,7 +63,7 @@ table 50100 "ECB Setup"
 
     procedure SetupDefaultData()
     var
-        EuroFXRefUrlTok: Label 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip';
+        EuroFXRefUrlTok: Label 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip', Locked = true;
     begin
         InsertIfNotExists();
         "Download URL" := EuroFXRefUrlTok;

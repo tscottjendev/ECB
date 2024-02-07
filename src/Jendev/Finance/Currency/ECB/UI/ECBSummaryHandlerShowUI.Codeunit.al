@@ -16,20 +16,21 @@ codeunit 50108 "ECB Summary Handler Show UI" implements "ECB Summary Handler"
         RecordsRead += 1;
     end;
 
-    procedure ShowSummary();
+    procedure ShowSummary()
     var
         SummaryNotification: Notification;
+        NothingInsertedMsg: Label 'There were no new records to insert.';
         SummaryMsg: Label 'ECB Import complete. %1 records read. %2 records inserted.', Comment = '%1 number of records read and %2 number of records inserted';
     begin
-        if (RecordsRead = 0)
-            and (RecordsInserted = 0)
-        then
-            exit;
-
         SummaryNotification.Id := SummaryNotificationId();
         if SummaryNotification.Recall() then;
 
-        SummaryNotification.Message(StrSubstNo(SummaryMsg, RecordsRead, RecordsInserted));
+        SummaryNotification.Message(StrSubstNo(NothingInsertedMsg));
+        if (RecordsRead <> 0)
+            or (RecordsInserted <> 0)
+        then
+            SummaryNotification.Message(StrSubstNo(SummaryMsg, RecordsRead, RecordsInserted));
+
         SummaryNotification.Send();
     end;
 

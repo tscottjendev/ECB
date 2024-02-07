@@ -45,9 +45,9 @@ codeunit 50110 "ECB Import Impl."
         OpenUI(ECBProgressHandler, ECBSummaryHandler);
 
         TestECBSetup();
-        DownloadFile(TempBlob);
-        DecompressFile(TempBlob);
-        FillECBBuffer(TempECBCSVBuffer, TempBlob);
+        DownloadECBZipFile(TempBlob);
+        DecompressECBZipFile(TempBlob);
+        FillECBBufferFromStream(TempECBCSVBuffer, TempBlob);
         if AlreadyImported(TempECBCSVBuffer) then
             exit;
 
@@ -59,12 +59,12 @@ codeunit 50110 "ECB Import Impl."
 
     local procedure AlreadyImported(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary): Boolean
     begin
-        if IsDateAlreadyImported(TempECBCSVBuffer, LastExchangeDateImported()) then begin
-            NotifyAlreadyImported(LastExchangeDateImported());
-            exit(true);
-        end;
+        if not IsDateAlreadyImported(TempECBCSVBuffer, LastExchangeDateImported()) then
+            exit(false);
 
-        exit(false);
+        NotifyAlreadyImported(LastExchangeDateImported());
+        exit(true);
+
     end;
 
     local procedure AlreadyImportedNotificationId(): Guid
@@ -124,7 +124,7 @@ codeunit 50110 "ECB Import Impl."
         exit(not CurrencyExchangeRate.IsEmpty());
     end;
 
-    local procedure DecompressFile(var TempBlob: Codeunit System.Utilities."Temp Blob")
+    local procedure DecompressECBZipFile(var TempBlob: Codeunit System.Utilities."Temp Blob")
     var
         DataCompression: Codeunit System.IO."Data Compression";
         InStream: InStream;
@@ -143,7 +143,7 @@ codeunit 50110 "ECB Import Impl."
         DataCompression.CloseZipArchive();
     end;
 
-    local procedure DownloadFile(var TempBlob: Codeunit System.Utilities."Temp Blob")
+    local procedure DownloadECBZipFile(var TempBlob: Codeunit System.Utilities."Temp Blob")
     var
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
@@ -173,10 +173,10 @@ codeunit 50110 "ECB Import Impl."
         exit(ECBSetup."Download URL");
     end;
 
-    local procedure FillECBBuffer(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; var TempBlob: Codeunit System.Utilities."Temp Blob")
+    local procedure FillECBBufferFromStream(var TempECBCSVBuffer: Record System.IO."CSV Buffer" temporary; var TempBlob: Codeunit System.Utilities."Temp Blob")
     var
         InStream: InStream;
-        SeparatorTok: Label ',';
+        SeparatorTok: Label ',', Locked = true;
     begin
         TempBlob.CreateInStream(InStream);
         TempECBCSVBuffer.LoadDataFromStream(InStream, SeparatorTok);

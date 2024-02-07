@@ -40,7 +40,7 @@
     "CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
     "CRS.ObjectNamePrefix": "ECB ",
     "editor.codeActionsOnSave": {
-        "source.fixAll.al": true
+        "source.fixAll.al": "explicit"
     },
     "al.compilationOptions": {
         
